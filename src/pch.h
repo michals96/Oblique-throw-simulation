@@ -1,7 +1,6 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <thread> //new
 #include <SFML\Window.hpp>
 #include <SFML\Graphics.hpp>
 #include <SFML\OpenGL.hpp>
