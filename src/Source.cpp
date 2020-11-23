@@ -22,6 +22,10 @@ void initOpenGL(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);         //new
+    glEnable(GL_LIGHT0);           //new
+    glEnable(GL_NORMALIZE);        //new
+    glEnable(GL_COLOR_MATERIAL);   //new
 }
 
 void reshapeScreen(sf::Vector2u size)
@@ -45,6 +49,7 @@ void drawScene()
         0.0, 0.0, 0.0,
         north_of_camera.getX(), north_of_camera.getY(), north_of_camera.getZ());
 
+    // glDisable(GL_LIGHTING);       //new
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(1.0, 0, 0);
     glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0);
@@ -83,8 +88,8 @@ void drawScene()
     glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(0.3f, -0.3f, 0.3f);
     glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(0.3f, 0.3f, -0.3f);
     glEnd();
+    // glEnable(GL_LIGHTING);     //new
 
-    //------------ BEGIN new ---------------
     GLUquadricObj* qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_FILL);
     gluQuadricNormals(qobj, GLU_SMOOTH);
@@ -101,7 +106,6 @@ void drawScene()
     glRotatef(300.0, 1.0, 0.0, 0.0);
     gluCylinder(qobj, 0.25, 0.0, 0.5, 15, 5);
     glPopMatrix();
-    //------------ END new ---------------
 }
 
 int main()
