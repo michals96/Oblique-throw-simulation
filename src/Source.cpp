@@ -15,7 +15,8 @@ struct Spherical
 
 Spherical camera(3.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
-unsigned char projection_type = 'p'; //new
+unsigned char projection_type = 'p';
+float fov = 45.0f; //new
 
 void initOpenGL(void)
 {
@@ -28,8 +29,8 @@ void reshapeScreen(sf::Vector2u size)
     glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (projection_type == 'p') gluPerspective(45.0, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0); //new
-    else glOrtho(-1.245 * ((GLdouble)size.x / (GLdouble)size.y), 1.245 * ((GLdouble)size.x / (GLdouble)size.y), -1.245, 1.245, -3.0, 12.0); //new
+    if (projection_type == 'p') gluPerspective(fov, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0); //new
+    else glOrtho(-1.245 * ((GLdouble)size.x / (GLdouble)size.y), 1.245 * ((GLdouble)size.x / (GLdouble)size.y), -1.245, 1.245, -3.0, 12.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -102,10 +103,10 @@ int main()
         {
             if (event.type == sfe::Closed || (event.type == sfe::KeyPressed && event.key.code == sfk::Escape)) running = false;
             if (event.type == sfe::Resized) reshapeScreen(window.getSize());
-            if (event.type == sf::Event::KeyPressed) //new
+            if (event.type == sf::Event::KeyPressed)
             {
-                if (event.key.code == sf::Keyboard::Num0) { projection_type = 'o'; reshapeScreen(window.getSize()); } //new
-                if (event.key.code == sf::Keyboard::Num9) { projection_type = 'p'; reshapeScreen(window.getSize()); } //new
+                if (event.key.code == sf::Keyboard::Num0) { projection_type = 'o'; reshapeScreen(window.getSize()); }
+                if (event.key.code == sf::Keyboard::Num9) { projection_type = 'p'; reshapeScreen(window.getSize()); }
             }
         }
         if (sfk::isKeyPressed(sfk::Left)) camera.fi -= 0.01f;
@@ -124,6 +125,9 @@ int main()
         if (sfk::isKeyPressed(sfk::D)) rot.y += 0.5f * shift_key_state;
         if (sfk::isKeyPressed(sfk::C)) rot.z += 0.5f * shift_key_state;
         shift_key_state = 1;
+
+        if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize()); } //new
+        if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize()); } //new
 
         drawScene();
         window.display();
