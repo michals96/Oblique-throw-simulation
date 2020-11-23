@@ -14,11 +14,12 @@ struct Spherical
 };
 
 Spherical camera(3.0f, 0.2f, 1.2f);
+sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f); //new
 
 void initOpenGL(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-    glEnable(GL_DEPTH_TEST); //new
+    glEnable(GL_DEPTH_TEST);
 }
 
 void reshapeScreen(sf::Vector2u size)
@@ -33,7 +34,7 @@ void reshapeScreen(sf::Vector2u size)
 
 void drawScene()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //new
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
     Spherical north_of_camera(camera.distance, camera.theta + 0.01f, camera.fi);
@@ -55,6 +56,13 @@ void drawScene()
     glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, -1.0);
     glEnd();
     glDisable(GL_LINE_STIPPLE);
+
+    //transformacje
+    glTranslatef(pos.x, pos.y, pos.z);   //new
+    glRotatef(rot.x, 1, 0, 0);           //new
+    glRotatef(rot.y, 0, 1, 0);           //new
+    glRotatef(rot.z, 0, 0, 1);           //new
+    glScalef(scale.x, scale.y, scale.z); //new
 
     glLineWidth(2.0);
     glColor3f(0, 0, 0);
@@ -78,8 +86,9 @@ void drawScene()
 int main()
 {
     bool running = true;
-    sf::ContextSettings context(24, 0, 0, 4, 5); //new
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Michal Stefaniuk projekt", 7U, context); //new
+    sf::ContextSettings context(24, 0, 0, 4, 5);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Michal Stefaniuk projekt", 7U, context);
+    int shift_key_state = 1;
 
     window.setVerticalSyncEnabled(true);
     reshapeScreen(window.getSize());
@@ -97,6 +106,19 @@ int main()
         if (sfk::isKeyPressed(sfk::Right)) camera.fi += 0.01f;
         if (sfk::isKeyPressed(sfk::Up)) camera.theta += 0.01f;
         if (sfk::isKeyPressed(sfk::Down)) camera.theta -= 0.01f;
+
+        if (sfk::isKeyPressed(sfk::LShift)) shift_key_state = -1;        //new
+        if (sfk::isKeyPressed(sfk::Q)) pos.x += 0.01f * shift_key_state;   //new
+        if (sfk::isKeyPressed(sfk::A)) pos.y += 0.01f * shift_key_state;   //new
+        if (sfk::isKeyPressed(sfk::Z)) pos.z += 0.01f * shift_key_state;   //new
+        if (sfk::isKeyPressed(sfk::W)) scale.x += 0.01f * shift_key_state; //new
+        if (sfk::isKeyPressed(sfk::S)) scale.y += 0.01f * shift_key_state; //new
+        if (sfk::isKeyPressed(sfk::X)) scale.z += 0.01f * shift_key_state; //new
+        if (sfk::isKeyPressed(sfk::E)) rot.x += 0.5f * shift_key_state;    //new
+        if (sfk::isKeyPressed(sfk::D)) rot.y += 0.5f * shift_key_state;    //new
+        if (sfk::isKeyPressed(sfk::C)) rot.z += 0.5f * shift_key_state;    //new
+        shift_key_state = 1;
+
         drawScene();
         window.display();
     }
