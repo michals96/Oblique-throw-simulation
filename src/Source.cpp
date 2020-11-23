@@ -16,7 +16,7 @@ struct Spherical
 Spherical camera(3.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
 unsigned char projection_type = 'p';
-float fov = 45.0f; //new
+float fov = 45.0f;
 
 void initOpenGL(void)
 {
@@ -29,7 +29,7 @@ void reshapeScreen(sf::Vector2u size)
     glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (projection_type == 'p') gluPerspective(fov, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0); //new
+    if (projection_type == 'p') gluPerspective(fov, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0);
     else glOrtho(-1.245 * ((GLdouble)size.x / (GLdouble)size.y), 1.245 * ((GLdouble)size.x / (GLdouble)size.y), -1.245, 1.245, -3.0, 12.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -83,6 +83,25 @@ void drawScene()
     glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(0.3f, -0.3f, 0.3f);
     glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(0.3f, 0.3f, -0.3f);
     glEnd();
+
+    //------------ BEGIN new ---------------
+    GLUquadricObj* qobj = gluNewQuadric();
+    gluQuadricDrawStyle(qobj, GLU_FILL);
+    gluQuadricNormals(qobj, GLU_SMOOTH);
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glTranslatef(-0.75, 0.0, 0.0);
+    gluSphere(qobj, 0.2, 15, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glTranslatef(0.75, 0.0, 0.0);
+    glRotatef(300.0, 1.0, 0.0, 0.0);
+    gluCylinder(qobj, 0.25, 0.0, 0.5, 15, 5);
+    glPopMatrix();
+    //------------ END new ---------------
 }
 
 int main()
@@ -126,8 +145,8 @@ int main()
         if (sfk::isKeyPressed(sfk::C)) rot.z += 0.5f * shift_key_state;
         shift_key_state = 1;
 
-        if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize()); } //new
-        if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize()); } //new
+        if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize()); }
+        if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize()); }
 
         drawScene();
         window.display();
