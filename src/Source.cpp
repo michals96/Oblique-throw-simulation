@@ -23,6 +23,26 @@ void drawScene()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
+
+    gluLookAt(0.8, 0.8, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0); //new
+
+    //układ
+    glBegin(GL_LINES); //new
+     //Osie układu
+    glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(1.0, 0, 0); //new
+    glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0); //new
+    glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, 1.0); //new
+    glEnd();           //new
+
+    //Linie przerywane
+    glEnable(GL_LINE_STIPPLE);  //new
+    glLineStipple(2, 0xAAAA);  //new
+    glBegin(GL_LINES);         //new
+    glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(-1.0, 0, 0); //new
+    glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, -1.0, 0); //new
+    glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, -1.0); //new
+    glEnd();                    //new
+    glDisable(GL_LINE_STIPPLE); //new
 }
 
 int main()
