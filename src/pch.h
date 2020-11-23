@@ -6,4 +6,6 @@
 #include <SFML\OpenGL.hpp>
 #include <gl\GLU.h>
 
+#include "materials.h" //new
+
 #endif //PCH_H

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿#include "pch.h" //new - uwaga - dodano tam now� linijk�!
 #include <iostream>
 
 typedef sf::Event sfe;
@@ -13,7 +13,7 @@ struct Spherical
     float getZ() { return distance * cos(theta) * sin(fi); }
 };
 
-Spherical camera(3.0f, 0.2f, 1.2f);
+Spherical camera(3.0f, 0.2f, 1.2f), light_position(4.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
 unsigned char projection_type = 'p';
 float fov = 45.0f;
@@ -22,10 +22,13 @@ void initOpenGL(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);         //new
-    glEnable(GL_LIGHT0);           //new
-    glEnable(GL_NORMALIZE);        //new
-    glEnable(GL_COLOR_MATERIAL);   //new
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_COLOR_MATERIAL);
+
+    GLfloat light_ambient_global[4] = { 0.5,0.5,0.5,1 };          //new
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);   //new
 }
 
 void reshapeScreen(sf::Vector2u size)
@@ -48,8 +51,10 @@ void drawScene()
     gluLookAt(camera.getX(), camera.getY(), camera.getZ(),
         0.0, 0.0, 0.0,
         north_of_camera.getX(), north_of_camera.getY(), north_of_camera.getZ());
+    GLfloat light0_position[4] = { light_position.getX(), light_position.getY(), light_position.getZ(), 0.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-    // glDisable(GL_LIGHTING);       //new
+    glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(1.0, 0, 0);
     glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0);
@@ -88,7 +93,7 @@ void drawScene()
     glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(0.3f, -0.3f, 0.3f);
     glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(0.3f, 0.3f, -0.3f);
     glEnd();
-    // glEnable(GL_LIGHTING);     //new
+    glEnable(GL_LIGHTING);
 
     GLUquadricObj* qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_FILL);
@@ -100,19 +105,24 @@ void drawScene()
     gluSphere(qobj, 0.2, 15, 10);
     glPopMatrix();
 
+    glDisable(GL_COLOR_MATERIAL);       //new
     glPushMatrix();
-    glColor3f(0.0f, 1.0f, 0.0f);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        //new
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);        //new
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);      //new
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);     //new
     glTranslatef(0.75, 0.0, 0.0);
     glRotatef(300.0, 1.0, 0.0, 0.0);
     gluCylinder(qobj, 0.25, 0.0, 0.5, 15, 5);
     glPopMatrix();
+    glEnable(GL_COLOR_MATERIAL);       //new
 }
 
 int main()
 {
     bool running = true;
     sf::ContextSettings context(24, 0, 0, 4, 5);
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Michal Stefaniuk projekt", 7U, context);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Open GL Lab1 11", 7U, context);
     int shift_key_state = 1;
 
     window.setVerticalSyncEnabled(true);
@@ -136,6 +146,11 @@ int main()
         if (sfk::isKeyPressed(sfk::Right)) camera.fi += 0.01f;
         if (sfk::isKeyPressed(sfk::Up)) camera.theta += 0.01f;
         if (sfk::isKeyPressed(sfk::Down)) camera.theta -= 0.01f;
+
+        if (sfk::isKeyPressed(sfk::I)) light_position.fi -= 0.01f;
+        if (sfk::isKeyPressed(sfk::O)) light_position.fi += 0.01f;
+        if (sfk::isKeyPressed(sfk::K)) light_position.theta += 0.01f;
+        if (sfk::isKeyPressed(sfk::L)) light_position.theta -= 0.01f;
 
         if (sfk::isKeyPressed(sfk::LShift)) shift_key_state = -1;
         if (sfk::isKeyPressed(sfk::Q)) pos.x += 0.01f * shift_key_state;
