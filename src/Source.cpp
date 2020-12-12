@@ -76,15 +76,7 @@ void reshapeScreen(sf::Vector2u size)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
-void glVertexsf(sf::Vector3f v)
-{
-    glVertex3f(v.x, v.y, v.z);
-}
 
-void glNormalsf(sf::Vector3f v)
-{
-    glNormal3f(v.x, v.y, v.z);
-}
 void drawScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -97,68 +89,47 @@ void drawScene()
     GLfloat light0_position[4] = { light_position.getX(), light_position.getY(), light_position.getZ(), 0.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-   // GLUquadricObj* qobj = gluNewQuadric();
-   // GLUquadricObj* qobj2 = gluNewQuadric();
+    GLUquadricObj* qobj = gluNewQuadric();
+    GLUquadricObj* qobj2 = gluNewQuadric();
     GLUquadricObj* qobj3 = gluNewQuadric();
-    //GLUquadricObj* qobj4 = gluNewQuadric();
-    //GLUquadricObj* qobj5 = gluNewQuadric();
-
-    gluQuadricDrawStyle(qobj3, GLU_FILL);
-    gluQuadricNormals(qobj3, GLU_SMOOTH);
-
-    //gluQuadricDrawStyle(qobj2, GLU_FILL);
-    //gluQuadricNormals(qobj2, GLU_SMOOTH);
+    GLUquadricObj* qobj4 = gluNewQuadric();
+    GLUquadricObj* qobj5 = gluNewQuadric();
     
-    /*glPushMatrix();
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);       
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);      
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);    
-    glTranslatef(-20.0, 1.0, 0.0);
-    gluSphere(qobj, 1., 15, 10);
-    glPopMatrix();
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glDisable(GL_COLOR_MATERIAL);
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
+    glTranslatef(-20.0, 1.0, 0.0);
+    gluSphere(qobj, 1., 15, 10);
+    glPopMatrix();
+    
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
     glTranslatef(-10.0, 1.0, 0.0);
     gluSphere(qobj2, 1., 15, 10);
-    glPopMatrix();*/
+    glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glTranslatef(position.x, position.y, position.z);
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
-    /*glPushMatrix();
+    glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glTranslatef(10.0, 1.0, 0.0);
     gluSphere(qobj4, 1., 15, 10);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glTranslatef(20.0, 1.0, 0.0);
     gluSphere(qobj5, 1., 15, 10);
-    glPopMatrix();*/
+    glPopMatrix();
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -232,10 +203,9 @@ int main()
         {
             float dt = timer - tmp;
             velocity.y = velocity.y - g * timer;
-            position.x = position.x; //position.x + velocity.x * dt;
+            position.x = position.x;
             position.y = position.y + velocity.y * dt;
       
-            
             std::cout << position.y << std::endl;
             tmp = timer;
         }
