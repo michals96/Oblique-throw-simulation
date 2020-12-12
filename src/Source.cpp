@@ -141,13 +141,13 @@ void drawScene()
     gluSphere(qobj2, 1., 15, 10);
     glPopMatrix();
 
-    /*glPushMatrix();
+    glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
     glTranslatef(position_3.x, position_3.y, position_3.z);
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
-    glPushMatrix();
+    /*glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
     glTranslatef(10.0, 1.0, 0.0);
     gluSphere(qobj4, 1., 15, 10);
@@ -242,7 +242,7 @@ int main()
             firstBallDone = true;
             tmp = 0.0f;
             timer = 0.0;
-            std::cout << "SECOND BALL" << std::endl;
+            //std::cout << "SECOND BALL" << std::endl;
         }
 
         if (animationStarted && firstBallDone && !secondBallDone)
@@ -258,15 +258,29 @@ int main()
         {
             position_2.y = 1;
             secondBallDone = true;
-            animationStarted = 0;
+            tmp = 0.0f;
+            timer = 0.0;
         }
 
-
-       
-        
+        if (animationStarted && firstBallDone && secondBallDone && !thirdBallDone)
+        {
+            thirdBallDone = false;
+            float dt = timer - tmp;
+            velocity_3.y = velocity_3.y - g * timer;
+            position_3.y = position_3.y + velocity_3.y * dt;
+            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_2.y << ' ' << position_2.y << std::endl;
+            tmp = timer;
+        }
+        if (position_3.y < 1.)
+        {
+            position_3.y = 1;
+            thirdBallDone = true;
+            animationStarted = 0;
+        }
 
         drawScene();
         window.display();
     }
+
     return 0;
 }
