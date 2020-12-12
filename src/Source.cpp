@@ -53,7 +53,11 @@ float firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDon
 
 void startAnimation()
 {
-    firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDone = false;
+    firstBallDone = false;
+    secondBallDone = false;
+    thirdBallDone = false;
+    fourthBallDone = false;
+    fivthBallDone = false;
 
     velocity_1.x = 0.0;
     velocity_1.y = 5.0;
@@ -76,8 +80,9 @@ void startAnimation()
     velocity_5.z = 0.0;
 
     animationStarted = true;
-
     timer = 0.0;
+
+    std::cout << "SET " << animationStarted << firstBallDone << secondBallDone << thirdBallDone << fourthBallDone << fivthBallDone << std::endl;
 }
 
 void initOpenGL(void)
@@ -226,7 +231,9 @@ int main()
         if (sfk::isKeyPressed(sfk::Space)) { startAnimation(); }
         float tmp = 0.0f;
         float g = 0.981f;
-        
+
+        std::cout << animationStarted << firstBallDone << secondBallDone << thirdBallDone << fourthBallDone << fivthBallDone << std::endl;
+
         if (animationStarted && !firstBallDone)
         {
             firstBallDone = false;
@@ -236,9 +243,10 @@ int main()
             // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_1.y << ' ' << position_1.y << std::endl;
             tmp = timer;
         }
-        if (position_1.y < 1.)
+        if (position_1.y < 1.0)
         {
-            position_1.y = 1;
+            std::cout << "1 Ustawiam" << std::endl;
+            position_1.y = 1.1f;
             firstBallDone = true;
             tmp = 0.0f;
             timer = 0.0;
@@ -252,9 +260,10 @@ int main()
             position_2.y = position_2.y + velocity_2.y * dt;
             tmp = timer;
         }
-        if (position_2.y < 1.)
+        if (position_2.y < 1.0)
         {
-            position_2.y = 1;
+            std::cout << "2 Ustawiam" << std::endl;
+            position_2.y = 1.1f;
             secondBallDone = true;
             tmp = 0.0f;
             timer = 0.0;
@@ -268,9 +277,10 @@ int main()
             position_3.y = position_3.y + velocity_3.y * dt;
             tmp = timer;
         }
-        if (position_3.y < 1.)
+        if (position_3.y < 1.0)
         {
-            position_3.y = 1;
+            std::cout << "3 Ustawiam" << std::endl;
+            position_3.y = 1.1f;
             thirdBallDone = true;
             tmp = 0.0f;
             timer = 0.0;
@@ -284,12 +294,36 @@ int main()
             position_4.y = position_4.y + velocity_4.y * dt;
             tmp = timer;
         }
-        if (position_4.y < 1.)
+        if (position_4.y < 1.0)
         {
-            position_4.y = 1;
+            std::cout << "4 Ustawiam" << std::endl;
+            position_4.y = 1.1f;
             fourthBallDone = true;
+            tmp = 0.0f;
+            timer = 0.0;
+        }
 
+        if (animationStarted && firstBallDone && secondBallDone && thirdBallDone && fourthBallDone && !fivthBallDone)
+        {
+            fivthBallDone = false;
+            float dt = timer - tmp;
+            velocity_5.y = velocity_5.y - g * timer;
+            position_5.y = position_5.y + velocity_5.y * dt;
+            tmp = timer;
+        }
+        if (position_5.y < 1.0)
+        {
+            std::cout << "5 Ustawiam" << std::endl;
+            position_5.y = 1.1f;
+            fivthBallDone = true;
+            tmp = 0.0f;
             animationStarted = 0;
+        }
+
+        if (!animationStarted && firstBallDone && secondBallDone && thirdBallDone && fourthBallDone && fivthBallDone)
+        {
+            animationStarted = 0;
+            //firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDone = false;
         }
 
         drawScene();
