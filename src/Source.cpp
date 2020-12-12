@@ -5,6 +5,12 @@ typedef sf::Event sfe;
 typedef sf::Keyboard sfk;
 sf::Texture TEXid;
 
+struct Velocity
+{
+    float x, y, z;
+    Velocity(float gx, float gy, float gz) : x(gx), y(gy), z(gz) {};
+};
+
 struct Spherical
 {
     float distance, theta, fi;
@@ -14,10 +20,37 @@ struct Spherical
     float getZ() { return distance * cos(theta) * sin(fi); }
 };
 
+struct Position
+{
+    float x, y, z;
+    Position(float gx, float gy, float gz) : x(gx), y(gy), z(gz) {};
+};
+
 Spherical camera(3.0f, 0.2f, 1.2f), light_position(4.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
+
+Position position(0., 0., 0.);
+Velocity velocity(0., 0., 0.);
+
 unsigned char projection_type = 'p';
 float fov = 45.0f;
+float timer = 0.0f;
+bool animationStarted = false;
+
+void startAnimation()
+{
+    velocity.x = 0.0;
+    velocity.y = 5.0;
+    velocity.z = 0.0;
+    
+    position.x = 0.0;
+    position.y = 1.0;
+    position.z = 0.0;
+
+    animationStarted = true;
+
+    timer = 0.0;
+}
 
 void initOpenGL(void)
 {
@@ -43,7 +76,15 @@ void reshapeScreen(sf::Vector2u size)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+void glVertexsf(sf::Vector3f v)
+{
+    glVertex3f(v.x, v.y, v.z);
+}
 
+void glNormalsf(sf::Vector3f v)
+{
+    glNormal3f(v.x, v.y, v.z);
+}
 void drawScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -56,74 +97,19 @@ void drawScene()
     GLfloat light0_position[4] = { light_position.getX(), light_position.getY(), light_position.getZ(), 0.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-    // To jest uklad wspolrzednych
-    /* glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(1.0, 0, 0);
-    glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0);
-    glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, 1.0);
-    glEnd();
-
-    glEnable(GL_LINE_STIPPLE);
-    glLineStipple(2, 0xAAAA);
-    glBegin(GL_LINES);
-    glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(-1.0, 0, 0);
-    glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, -1.0, 0);
-    glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, -1.0);
-    glEnd();
-    glDisable(GL_LINE_STIPPLE); */
-
-    // trojkat wpisany w szescian :) 
-    /*glTranslatef(pos.x, pos.y, pos.z);
-    glRotatef(rot.x, 1, 0, 0);
-    glRotatef(rot.y, 0, 1, 0);
-    glRotatef(rot.z, 0, 0, 1);
-    glScalef(scale.x, scale.y, scale.z);
-
-    glLineWidth(2.0);
-    glColor3f(0, 0, 0);
-    glBegin(GL_LINES);
-    for (unsigned char i = 0; i < 2; i++)
-        for (unsigned char j = 0; j < 2; j++)
-        {
-            glVertex3f(-0.3f + 0.6f * (i ^ j), -0.3f + 0.6f * j, -0.3f); glVertex3f(-0.3f + 0.6f * (i ^ j), -0.3f + 0.6f * j, 0.3f);
-            glVertex3f(-0.3f, -0.3f + 0.6f * (i ^ j), -0.3f + 0.6f * j); glVertex3f(0.3f, -0.3f + 0.6f * (i ^ j), -0.3f + 0.6f * j);
-            glVertex3f(-0.3f + 0.6f * (i ^ j), -0.3f, -0.3f + 0.6f * j); glVertex3f(-0.3f + 0.6f * (i ^ j), 0.3f, -0.3f + 0.6f * j);
-        }
-    glEnd();
-    glLineWidth(1.0);
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f); glVertex3f(-0.3f, 0.3f, 0.3f);
-    glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(0.3f, -0.3f, 0.3f);
-    glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(0.3f, 0.3f, -0.3f);
-    glEnd();
-    glEnable(GL_LIGHTING);*/
-
-    // SPHERE
-    /*GLUquadricObj* qobj = gluNewQuadric();
-    gluQuadricDrawStyle(qobj, GLU_FILL);
-    gluQuadricNormals(qobj, GLU_SMOOTH);
-
-    glPushMatrix();
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(-0.75, 0.0, 0.0);
-    gluSphere(qobj, 0.2, 15, 10);
-    glPopMatrix();*/
-
-    // CONE 
-    GLUquadricObj* qobj = gluNewQuadric();
-    GLUquadricObj* qobj2 = gluNewQuadric();
+   // GLUquadricObj* qobj = gluNewQuadric();
+   // GLUquadricObj* qobj2 = gluNewQuadric();
     GLUquadricObj* qobj3 = gluNewQuadric();
-    GLUquadricObj* qobj4 = gluNewQuadric();
-    GLUquadricObj* qobj5 = gluNewQuadric();
+    //GLUquadricObj* qobj4 = gluNewQuadric();
+    //GLUquadricObj* qobj5 = gluNewQuadric();
 
-    gluQuadricDrawStyle(qobj, GLU_FILL);
-    gluQuadricNormals(qobj, GLU_SMOOTH);
+    gluQuadricDrawStyle(qobj3, GLU_FILL);
+    gluQuadricNormals(qobj3, GLU_SMOOTH);
 
-    gluQuadricDrawStyle(qobj2, GLU_FILL);
-    gluQuadricNormals(qobj2, GLU_SMOOTH);
+    //gluQuadricDrawStyle(qobj2, GLU_FILL);
+    //gluQuadricNormals(qobj2, GLU_SMOOTH);
     
-    glPushMatrix();
+    /*glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
     glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        
     glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);       
@@ -142,7 +128,7 @@ void drawScene()
     glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glTranslatef(-10.0, 1.0, 0.0);
     gluSphere(qobj2, 1., 15, 10);
-    glPopMatrix();
+    glPopMatrix();*/
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -150,11 +136,11 @@ void drawScene()
     glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
     glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
-    glTranslatef(0.0, 1.0, 0.0);
+    glTranslatef(position.x, position.y, position.z);
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
-    glPushMatrix();
+    /*glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
     glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
@@ -172,7 +158,7 @@ void drawScene()
     glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
     glTranslatef(20.0, 1.0, 0.0);
     gluSphere(qobj5, 1., 15, 10);
-    glPopMatrix();
+    glPopMatrix();*/
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -192,6 +178,7 @@ int main()
     sf::ContextSettings context(24, 0, 0, 4, 5);
     sf::RenderWindow window(sf::VideoMode(800, 600), "Michal Stefaniuk - projekt semestralny", 7U, context);
     int shift_key_state = 1;
+    sf::Clock clock;
 
     window.setVerticalSyncEnabled(true);
     reshapeScreen(window.getSize());
@@ -200,6 +187,9 @@ int main()
     while (running)
     {
         sfe event;
+        sf::Time elapsed = clock.restart();
+        timer += elapsed.asSeconds();
+
         while (window.pollEvent(event))
         {
             if (event.type == sfe::Closed || (event.type == sfe::KeyPressed && event.key.code == sfk::Escape)) running = false;
@@ -234,6 +224,26 @@ int main()
 
         if (sfk::isKeyPressed(sfk::LBracket)) { fov -= 1.0f; reshapeScreen(window.getSize()); }
         if (sfk::isKeyPressed(sfk::RBracket)) { fov += 1.0f; reshapeScreen(window.getSize()); }
+        if (sfk::isKeyPressed(sfk::Space)) { startAnimation(); }
+        float tmp = 0.0f;
+        float g = 0.981f;
+
+        if (animationStarted)
+        {
+            float dt = timer - tmp;
+            velocity.y = velocity.y - g * timer;
+            position.x = position.x; //position.x + velocity.x * dt;
+            position.y = position.y + velocity.y * dt;
+      
+            
+            std::cout << position.y << std::endl;
+            tmp = timer;
+        }
+        if (position.y < 1.)
+        {
+           position.y = 1;
+           animationStarted = 0;
+        }
 
         drawScene();
         window.display();
