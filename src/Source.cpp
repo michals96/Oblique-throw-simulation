@@ -147,17 +147,17 @@ void drawScene()
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
-    /*glPushMatrix();
+    glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(10.0, 1.0, 0.0);
+    glTranslatef(position_4.x, position_4.y, position_4.z);
     gluSphere(qobj4, 1., 15, 10);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(20.0, 1.0, 0.0);
+    glTranslatef(position_5.x, position_5.y, position_5.z);
     gluSphere(qobj5, 1., 15, 10);
-    glPopMatrix();*/
+    glPopMatrix();
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -242,7 +242,6 @@ int main()
             firstBallDone = true;
             tmp = 0.0f;
             timer = 0.0;
-            //std::cout << "SECOND BALL" << std::endl;
         }
 
         if (animationStarted && firstBallDone && !secondBallDone)
@@ -251,7 +250,6 @@ int main()
             float dt = timer - tmp;
             velocity_2.y = velocity_2.y - g * timer;
             position_2.y = position_2.y + velocity_2.y * dt;
-            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_2.y << ' ' << position_2.y << std::endl;
             tmp = timer;
         }
         if (position_2.y < 1.)
@@ -268,13 +266,29 @@ int main()
             float dt = timer - tmp;
             velocity_3.y = velocity_3.y - g * timer;
             position_3.y = position_3.y + velocity_3.y * dt;
-            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_2.y << ' ' << position_2.y << std::endl;
             tmp = timer;
         }
         if (position_3.y < 1.)
         {
             position_3.y = 1;
             thirdBallDone = true;
+            tmp = 0.0f;
+            timer = 0.0;
+        }
+
+        if (animationStarted && firstBallDone && secondBallDone && thirdBallDone && !fourthBallDone)
+        {
+            fourthBallDone = false;
+            float dt = timer - tmp;
+            velocity_4.y = velocity_4.y - g * timer;
+            position_4.y = position_4.y + velocity_4.y * dt;
+            tmp = timer;
+        }
+        if (position_4.y < 1.)
+        {
+            position_4.y = 1;
+            fourthBallDone = true;
+
             animationStarted = 0;
         }
 
