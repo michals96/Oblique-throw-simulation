@@ -29,8 +29,20 @@ struct Position
 Spherical camera(3.0f, 0.2f, 1.2f), light_position(4.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
 
-Position position(0., 0., 0.);
-Velocity velocity(0., 0., 0.);
+Position position_1(0., 0., 0.);
+Velocity velocity_1(0., 0., 0.);
+
+Position position_2(0., 0., 0.);
+Velocity velocity_2(0., 0., 0.);
+
+Position position_3(0., 0., 0.);
+Velocity velocity_3(0., 0., 0.);
+
+Position position_4(0., 0., 0.);
+Velocity velocity_4(0., 0., 0.);
+
+Position position_5(0., 0., 0.);
+Velocity velocity_5(0., 0., 0.);
 
 unsigned char projection_type = 'p';
 float fov = 45.0f;
@@ -39,13 +51,13 @@ bool animationStarted = false;
 
 void startAnimation()
 {
-    velocity.x = 0.0;
-    velocity.y = 5.0;
-    velocity.z = 0.0;
+    velocity_1.x = 0.0;
+    velocity_1.y = 5.0;
+    velocity_1.z = 0.0;
     
-    position.x = 0.0;
-    position.y = 1.0;
-    position.z = 0.0;
+    position_1.x = 0.0;
+    position_1.y = 1.0;
+    position_1.z = 0.0;
 
     animationStarted = true;
 
@@ -115,7 +127,7 @@ void drawScene()
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(position.x, position.y, position.z);
+    glTranslatef(position_1.x, position_1.y, position_1.z);
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
@@ -202,16 +214,16 @@ int main()
         if (animationStarted)
         {
             float dt = timer - tmp;
-            velocity.y = velocity.y - g * timer;
-            position.x = position.x;
-            position.y = position.y + velocity.y * dt;
+            velocity_1.y = velocity_1.y - g * timer;
+            position_1.x = position_1.x;
+            position_1.y = position_1.y + velocity_1.y * dt;
       
-            std::cout << position.y << std::endl;
+            std::cout << position_1.y << std::endl;
             tmp = timer;
         }
-        if (position.y < 1.)
+        if (position_1.y < 1.)
         {
-           position.y = 1;
+           position_1.y = 1;
            animationStarted = 0;
         }
 
