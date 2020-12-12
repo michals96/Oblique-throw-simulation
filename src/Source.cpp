@@ -1,8 +1,9 @@
-﻿#include "pch.h" //new - uwaga - dodano tam now� linijk�!
+﻿#include "pch.h"
 #include <iostream>
 
 typedef sf::Event sfe;
 typedef sf::Keyboard sfk;
+sf::Texture TEXid;
 
 struct Spherical
 {
@@ -26,9 +27,10 @@ void initOpenGL(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
     glEnable(GL_COLOR_MATERIAL);
+    TEXid.loadFromFile("ground.jpg");
 
-    GLfloat light_ambient_global[4] = { 0.5,0.5,0.5,1 };          //new
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);   //new
+    GLfloat light_ambient_global[4] = { 0.5,0.5,0.5,1 };     
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
 }
 
 void reshapeScreen(sf::Vector2u size)
@@ -48,13 +50,14 @@ void drawScene()
     glLoadIdentity();
 
     Spherical north_of_camera(camera.distance, camera.theta + 0.01f, camera.fi);
-    gluLookAt(camera.getX(), camera.getY(), camera.getZ(),
+    gluLookAt(camera.getX()*20, camera.getY()*20, camera.getZ()*20,
         0.0, 0.0, 0.0,
         north_of_camera.getX(), north_of_camera.getY(), north_of_camera.getZ());
     GLfloat light0_position[4] = { light_position.getX(), light_position.getY(), light_position.getZ(), 0.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
 
-    glDisable(GL_LIGHTING);
+    // To jest uklad wspolrzednych
+    /* glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(1.0, 0, 0);
     glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0);
@@ -68,9 +71,10 @@ void drawScene()
     glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, -1.0, 0);
     glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, -1.0);
     glEnd();
-    glDisable(GL_LINE_STIPPLE);
+    glDisable(GL_LINE_STIPPLE); */
 
-    glTranslatef(pos.x, pos.y, pos.z);
+    // trojkat wpisany w szescian :) 
+    /*glTranslatef(pos.x, pos.y, pos.z);
     glRotatef(rot.x, 1, 0, 0);
     glRotatef(rot.y, 0, 1, 0);
     glRotatef(rot.z, 0, 0, 1);
@@ -93,9 +97,10 @@ void drawScene()
     glColor3f(0.0f, 1.0f, 0.0f); glVertex3f(0.3f, -0.3f, 0.3f);
     glColor3f(0.0f, 0.0f, 1.0f); glVertex3f(0.3f, 0.3f, -0.3f);
     glEnd();
-    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);*/
 
-    GLUquadricObj* qobj = gluNewQuadric();
+    // SPHERE
+    /*GLUquadricObj* qobj = gluNewQuadric();
     gluQuadricDrawStyle(qobj, GLU_FILL);
     gluQuadricNormals(qobj, GLU_SMOOTH);
 
@@ -103,26 +108,40 @@ void drawScene()
     glColor3f(1.0f, 0.0f, 0.0f);
     glTranslatef(-0.75, 0.0, 0.0);
     gluSphere(qobj, 0.2, 15, 10);
-    glPopMatrix();
+    glPopMatrix();*/
 
-    glDisable(GL_COLOR_MATERIAL);       //new
+    // CONE 
+    GLUquadricObj* qobj = gluNewQuadric();
+    gluQuadricDrawStyle(qobj, GLU_FILL);
+    gluQuadricNormals(qobj, GLU_SMOOTH);
+    glDisable(GL_COLOR_MATERIAL);      
     glPushMatrix();
-    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        //new
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);        //new
-    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);      //new
-    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);     //new
-    glTranslatef(0.75, 0.0, 0.0);
-    glRotatef(300.0, 1.0, 0.0, 0.0);
-    gluCylinder(qobj, 0.25, 0.0, 0.5, 15, 5);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);       
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);      
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);    
+    glTranslatef(0.0, 1.0, 0.0);
+    gluSphere(qobj, 1., 15, 10);
     glPopMatrix();
-    glEnable(GL_COLOR_MATERIAL);       //new
+    
+
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    sf::Texture::bind(&TEXid);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(40.0, 0.0, 40.0);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(40.0, 0.0, -40.0);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-40.0, 0.0, -40.0);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-40.0, 0.0, 40.0);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
 
 int main()
 {
     bool running = true;
     sf::ContextSettings context(24, 0, 0, 4, 5);
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Open GL Lab1 11", 7U, context);
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Michal Stefaniuk - projekt semestralny", 7U, context);
     int shift_key_state = 1;
 
     window.setVerticalSyncEnabled(true);
