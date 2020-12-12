@@ -112,18 +112,67 @@ void drawScene()
 
     // CONE 
     GLUquadricObj* qobj = gluNewQuadric();
+    GLUquadricObj* qobj2 = gluNewQuadric();
+    GLUquadricObj* qobj3 = gluNewQuadric();
+    GLUquadricObj* qobj4 = gluNewQuadric();
+    GLUquadricObj* qobj5 = gluNewQuadric();
+
     gluQuadricDrawStyle(qobj, GLU_FILL);
     gluQuadricNormals(qobj, GLU_SMOOTH);
-    glDisable(GL_COLOR_MATERIAL);      
+
+    gluQuadricDrawStyle(qobj2, GLU_FILL);
+    gluQuadricNormals(qobj2, GLU_SMOOTH);
+    
     glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
     glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);        
     glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);       
     glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);      
     glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);    
-    glTranslatef(0.0, 1.0, 0.0);
+    glTranslatef(-20.0, 1.0, 0.0);
     gluSphere(qobj, 1., 15, 10);
     glPopMatrix();
-    
+    glDisable(GL_COLOR_MATERIAL);
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
+    glTranslatef(-10.0, 1.0, 0.0);
+    gluSphere(qobj2, 1., 15, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
+    glTranslatef(0.0, 1.0, 0.0);
+    gluSphere(qobj3, 1., 15, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
+    glTranslatef(10.0, 1.0, 0.0);
+    gluSphere(qobj4, 1., 15, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, PolishedGoldAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, PolishedGoldDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, PolishedGoldSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, PolishedGoldShininess);
+    glTranslatef(20.0, 1.0, 0.0);
+    gluSphere(qobj5, 1., 15, 10);
+    glPopMatrix();
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
