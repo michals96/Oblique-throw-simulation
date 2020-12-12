@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include <iostream>
+#include <stdlib.h>   
 
 typedef sf::Event sfe;
 typedef sf::Keyboard sfk;
@@ -29,35 +30,50 @@ struct Position
 Spherical camera(3.0f, 0.2f, 1.2f), light_position(4.0f, 0.2f, 1.2f);
 sf::Vector3f pos(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rot(0.0f, 0.0f, 0.0f);
 
-Position position_1(0., 0., 0.);
+Position position_1(-20.0, 1., 0.);
 Velocity velocity_1(0., 0., 0.);
 
-Position position_2(0., 0., 0.);
+Position position_2(-10., 1., 0.);
 Velocity velocity_2(0., 0., 0.);
 
-Position position_3(0., 0., 0.);
+Position position_3(0., 1., 0.);
 Velocity velocity_3(0., 0., 0.);
 
-Position position_4(0., 0., 0.);
+Position position_4(10., 1., 0.);
 Velocity velocity_4(0., 0., 0.);
 
-Position position_5(0., 0., 0.);
+Position position_5(20., 1., 0.);
 Velocity velocity_5(0., 0., 0.);
 
 unsigned char projection_type = 'p';
 float fov = 45.0f;
 float timer = 0.0f;
 bool animationStarted = false;
+float firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDone = false;
 
 void startAnimation()
 {
+    firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDone = false;
+
     velocity_1.x = 0.0;
     velocity_1.y = 5.0;
     velocity_1.z = 0.0;
-    
-    position_1.x = 0.0;
-    position_1.y = 1.0;
-    position_1.z = 0.0;
+
+    velocity_2.x = 0.0;
+    velocity_2.y = 5.0;
+    velocity_2.z = 0.0;
+
+    velocity_3.x = 0.0;
+    velocity_3.y = 5.0;
+    velocity_3.z = 0.0;
+
+    velocity_4.x = 0.0;
+    velocity_4.y = 5.0;
+    velocity_4.z = 0.0;
+
+    velocity_5.x = 0.0;
+    velocity_5.y = 5.0;
+    velocity_5.z = 0.0;
 
     animationStarted = true;
 
@@ -115,19 +131,19 @@ void drawScene()
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(-20.0, 1.0, 0.0);
+    glTranslatef(position_1.x, position_1.y, position_1.z);
     gluSphere(qobj, 1., 15, 10);
     glPopMatrix();
     
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(-10.0, 1.0, 0.0);
+    glTranslatef(position_2.x, position_2.y, position_3.z);
     gluSphere(qobj2, 1., 15, 10);
     glPopMatrix();
 
-    glPushMatrix();
+    /*glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f);
-    glTranslatef(position_1.x, position_1.y, position_1.z);
+    glTranslatef(position_3.x, position_3.y, position_3.z);
     gluSphere(qobj3, 1., 15, 10);
     glPopMatrix();
 
@@ -141,7 +157,7 @@ void drawScene()
     glColor3f(1.0f, 0.0f, 0.0f);
     glTranslatef(20.0, 1.0, 0.0);
     gluSphere(qobj5, 1., 15, 10);
-    glPopMatrix();
+    glPopMatrix();*/
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -210,22 +226,44 @@ int main()
         if (sfk::isKeyPressed(sfk::Space)) { startAnimation(); }
         float tmp = 0.0f;
         float g = 0.981f;
-
-        if (animationStarted)
+        
+        if (animationStarted && !firstBallDone)
         {
+            firstBallDone = false;
             float dt = timer - tmp;
             velocity_1.y = velocity_1.y - g * timer;
-            position_1.x = position_1.x;
             position_1.y = position_1.y + velocity_1.y * dt;
-      
-            std::cout << position_1.y << std::endl;
+            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_1.y << ' ' << position_1.y << std::endl;
             tmp = timer;
         }
         if (position_1.y < 1.)
         {
-           position_1.y = 1;
-           animationStarted = 0;
+            position_1.y = 1;
+            firstBallDone = true;
+            tmp = 0.0f;
+            timer = 0.0;
+            std::cout << "SECOND BALL" << std::endl;
         }
+
+        if (animationStarted && firstBallDone && !secondBallDone)
+        {
+            secondBallDone = false;
+            float dt = timer - tmp;
+            velocity_2.y = velocity_2.y - g * timer;
+            position_2.y = position_2.y + velocity_2.y * dt;
+            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_2.y << ' ' << position_2.y << std::endl;
+            tmp = timer;
+        }
+        if (position_2.y < 1.)
+        {
+            position_2.y = 1;
+            secondBallDone = true;
+            animationStarted = 0;
+        }
+
+
+       
+        
 
         drawScene();
         window.display();
