@@ -81,8 +81,6 @@ void startAnimation()
 
     animationStarted = true;
     timer = 0.0;
-
-    std::cout << "SET " << animationStarted << firstBallDone << secondBallDone << thirdBallDone << fourthBallDone << fivthBallDone << std::endl;
 }
 
 void initOpenGL(void)
@@ -240,12 +238,10 @@ int main()
             float dt = timer - tmp;
             velocity_1.y = velocity_1.y - g * timer;
             position_1.y = position_1.y + velocity_1.y * dt;
-            // std::cout << dt << ' ' << tmp << ' ' << timer << ' ' << velocity_1.y << ' ' << position_1.y << std::endl;
             tmp = timer;
         }
         if (position_1.y < 1.0)
         {
-            std::cout << "1 Ustawiam" << std::endl;
             position_1.y = 1.1f;
             firstBallDone = true;
             tmp = 0.0f;
@@ -262,7 +258,6 @@ int main()
         }
         if (position_2.y < 1.0)
         {
-            std::cout << "2 Ustawiam" << std::endl;
             position_2.y = 1.1f;
             secondBallDone = true;
             tmp = 0.0f;
@@ -279,7 +274,6 @@ int main()
         }
         if (position_3.y < 1.0)
         {
-            std::cout << "3 Ustawiam" << std::endl;
             position_3.y = 1.1f;
             thirdBallDone = true;
             tmp = 0.0f;
@@ -296,7 +290,6 @@ int main()
         }
         if (position_4.y < 1.0)
         {
-            std::cout << "4 Ustawiam" << std::endl;
             position_4.y = 1.1f;
             fourthBallDone = true;
             tmp = 0.0f;
@@ -313,7 +306,6 @@ int main()
         }
         if (position_5.y < 1.0)
         {
-            std::cout << "5 Ustawiam" << std::endl;
             position_5.y = 1.1f;
             fivthBallDone = true;
             tmp = 0.0f;
@@ -323,7 +315,6 @@ int main()
         if (!animationStarted && firstBallDone && secondBallDone && thirdBallDone && fourthBallDone && fivthBallDone)
         {
             animationStarted = 0;
-            //firstBallDone, secondBallDone, thirdBallDone, fourthBallDone, fivthBallDone = false;
         }
 
         drawScene();
